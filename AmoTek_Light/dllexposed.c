@@ -3,6 +3,7 @@
 #include "config.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 /** Variable Defs */
 
 blinkstick_device* deviceArray[BLINKSTICK_ARRAY_SIZE]; // Holds devices
@@ -100,7 +101,12 @@ gmx GMINT findDevice()
 	return (double)slot;
 }
 
-
+/**
+ * Releases the device.
+ * 
+ * \param slot
+ * \return success
+ */
 gmx GMBOOL freeDevice(GMINT slot)
 {
 	//Check if initialized
@@ -132,4 +138,61 @@ gmx GMBOOL freeDevice(GMINT slot)
 
 
 
+/**
+ * Sets the lighting.
+ * 
+ * \param slot
+ * \param channel
+ * \param index
+ * \param red
+ * \param blue
+ * \param green
+ * \return success
+ */
+gmx GMBOOL setDeviceLighting(GMINT slot, GMINT channel, GMINT index, GMINT red, GMINT blue, GMINT green)
+{
+	//Check if initialized
+	if (initialized == GMFALSE) { return GMFALSE; }
+
+	// Check if device exists
+	if (deviceValid[(int)slot])
+	{
+		// Set the color on device
+		if (blinkstick_set_color(deviceArray[(int)slot], (int)channel, (int)index, (int)red, (int)green, (int)blue))
+		{
+			return GMTRUE;
+		}
+		else
+		{
+			return GMFALSE;
+		}
+	}
+	return GMTRUE;
+}
+
+/**
+ * Get the red color from a device index LED.
+ * 
+ * \param slot the device slot
+ * \param index the index of the LED
+ * \return red color value
+ */
+gmx GMINT getDeviceRed(GMINT slot, GMINT index)
+{
+	GMINT colorVal = DEVICE_INVALID;
+	//Check if initialized
+	if (initialized == GMFALSE) { return DEVICE_INVALID; }
+
+	// Check if device exists
+	if (deviceValid[(int)slot])
+	{
+		blinkstick_color* col = blinkstick_get_color(deviceArray[(int)slot], (int)index);
+		// typecast
+		colorVal = (GMINT)(col->red);
+		// free the struct
+		free(col);
+	}
+
+	return colorVal;
+}
 
