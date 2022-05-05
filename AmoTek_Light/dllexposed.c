@@ -2,6 +2,7 @@
 #include "gmsexport.h"
 #include "config.h"
 #include <stdbool.h>
+#include <stdio.h>
 /** Variable Defs */
 
 blinkstick_device* deviceArray[BLINKSTICK_ARRAY_SIZE]; // Holds devices
@@ -67,7 +68,7 @@ gmx GMBOOL initBlinkStick()
  * 
  * \return Index to the device in the devices array
  */
-gmx GMINT findBlinkStick()
+gmx GMINT findDevice()
 {
 	// Exit when not inited
 	if (initialized == GMFALSE) { return GMFALSE; }
@@ -98,3 +99,37 @@ gmx GMINT findBlinkStick()
 
 	return (double)slot;
 }
+
+
+gmx GMBOOL freeDevice(GMINT slot)
+{
+	//Check if initialized
+	if (initialized == GMFALSE) { return GMFALSE; }
+
+	// Typecast slot
+	int deviceSlot = (int)slot;
+
+	// check for boundaries
+	if (deviceSlot < 0 || deviceSlot >= BLINKSTICK_ARRAY_SIZE)
+	{
+		printf("Device slot OOB!");
+		return GMFALSE;
+	}
+
+	// Check if the device is valid
+	if (deviceValid[deviceSlot])
+	{
+		// Destroy the device
+		blinkstick_destroy(deviceArray[deviceSlot]);
+		deviceValid[deviceSlot] = false;
+		printf("Released device at slot %d", deviceSlot);
+		return GMTRUE;
+	}
+	// Invalid
+	printf("Device does not exist at slot %d", deviceSlot);
+	return GMFALSE;
+}
+
+
+
+
