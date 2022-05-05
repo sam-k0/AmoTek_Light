@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <Windows.h>
 /** Variable Defs */
 
 blinkstick_device* deviceArray[BLINKSTICK_ARRAY_SIZE]; // Holds devices
@@ -46,12 +47,19 @@ int getFreeDeviceSlot()
  * 
  * \return Success (1) or Fail (0)
  */
-gmx GMBOOL initBlinkStick()
+gmx GMBOOL initEx(GMBOOL debug)
 {
 	if (initialized == GMTRUE)
 	{
 		return GMFALSE;
 	}
+
+	if (debug == GMTRUE)
+	{
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+	}
+
 	// Loop device array
 	int i = 0;
 	for (i = 0; i < BLINKSTICK_ARRAY_SIZE; i++)
@@ -78,6 +86,7 @@ gmx GMINT findDevice()
 	int slot = getFreeDeviceSlot();
 	if (slot == SLOTS_FULL)
 	{
+		printf("Device slots full!");
 		return DEVICE_INVALID;
 	}
 
@@ -85,19 +94,21 @@ gmx GMINT findDevice()
 	// Check if result is not null
 	if (result == NULL)
 	{
+		printf("Unknown error when searching devices / Is the device connected?");
 		return DEVICE_INVALID;
 	}
 
 	// Check if the handle is valid
 	if (result->handle == NULL)
 	{
+		printf("Invalid device handle");
 		return DEVICE_INVALID;
 	}
 
 	// The device seems valid, set flag valid and save
 	deviceValid[slot] = true;
 	deviceArray[slot] = result;
-
+	printf("Success on saving device");
 	return (double)slot;
 }
 
@@ -196,3 +207,54 @@ gmx GMINT getDeviceRed(GMINT slot, GMINT index)
 	return colorVal;
 }
 
+/**
+ * Get the green color from a device index LED.
+ *
+ * \param slot the device slot
+ * \param index the index of the LED
+ * \return green color value
+ */
+gmx GMINT getDeviceGreen(GMINT slot, GMINT index)
+{
+	GMINT colorVal = DEVICE_INVALID;
+	//Check if initialized
+	if (initialized == GMFALSE) { return DEVICE_INVALID; }
+
+	// Check if device exists
+	if (deviceValid[(int)slot])
+	{
+		blinkstick_color* col = blinkstick_get_color(deviceArray[(int)slot], (int)index);
+		// typecast
+		colorVal = (GMINT)(col->green);
+		// free the struct
+		free(col);
+	}
+
+	return colorVal;
+}
+
+/**
+ * Get the blue color from a device index LED.
+ *
+ * \param slot the device slot
+ * \param index the index of the LED
+ * \return blue color value
+ */
+gmx GMINT getDeviceBlue(GMINT slot, GMINT index)
+{
+	GMINT colorVal = DEVICE_INVALID;
+	//Check if initialized
+	if (initialized == GMFALSE) { return DEVICE_INVALID; }
+
+	// Check if device exists
+	if (deviceValid[(int)slot])
+	{
+		blinkstick_color* col = blinkstick_get_color(deviceArray[(int)slot], (int)index);
+		// typecast
+		colorVal = (GMINT)(col->blue);
+		// free the struct
+		free(col);
+	}
+
+	return colorVal;
+}
