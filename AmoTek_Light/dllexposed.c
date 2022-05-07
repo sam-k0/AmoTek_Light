@@ -258,3 +258,18 @@ gmx GMINT getDeviceBlue(GMINT slot, GMINT index)
 
 	return colorVal;
 }
+
+gmx GMINT resetLED(GMINT device, GMINT channel, GMINT index)
+{
+	//Check if initialized
+	if (initialized == GMFALSE) { return DEVICE_INVALID; }
+
+	// Check if device exists
+	if (deviceValid[(int)device])
+	{
+		blinkstick_off(deviceArray[(int)device], (int)channel, (int)index);
+		return GMTRUE;
+	}
+	return GMFALSE;
+	
+}
