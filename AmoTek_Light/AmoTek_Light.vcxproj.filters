@@ -27,6 +27,9 @@
     <ClInclude Include="hidapi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="registry_edit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libblinkstick.c">

@@ -26,6 +26,7 @@ gmx GMINT checkConnection(GMINT in)
 }
 
 
+
 int getFreeDeviceSlot()
 {
 	int i = 0;
@@ -160,16 +161,19 @@ gmx GMBOOL freeDevice(GMINT slot)
  * \param green
  * \return success
  */
-gmx GMBOOL setDeviceLighting(GMINT slot, GMINT channel, GMINT index, GMINT red, GMINT blue, GMINT green)
+gmx GMBOOL setDeviceLighting(GMINT slot, GMINT channel, GMINT index, GMINT red, GMINT green, GMINT blue)
 {
 	//Check if initialized
 	if (initialized == GMFALSE) { return GMFALSE; }
 
+	// Round...
+	int slotReal = (int)floor(slot);
+
 	// Check if device exists
-	if (deviceValid[(int)slot])
+	if (deviceValid[(int)slotReal])
 	{
 		// Set the color on device
-		if (blinkstick_set_color(deviceArray[(int)slot], (int)channel, (int)index, (int)red, (int)green, (int)blue))
+		if (blinkstick_set_color(deviceArray[(int)slotReal], (int)channel, (int)index, (int)red, (int)green, (int)blue))
 		{
 			return GMTRUE;
 		}
@@ -273,3 +277,4 @@ gmx GMINT resetLED(GMINT device, GMINT channel, GMINT index)
 	return GMFALSE;
 	
 }
+
