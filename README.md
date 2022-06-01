@@ -10,4 +10,4 @@ I will most likely use this for my personal purpose but I thought having a C-API
 
 ## Currently WIP!
 
-BlinkStick belongs to UAB Tulogic. I do not claim any ownership of this company, this is an unofficial API wrapper based on [https://github.com/ebenoist/libblinkstick]
+BlinkStick belongs to UAB Tulogic. I do not claim any ownership of this company, this is an unofficial wrapper based on [https://github.com/ebenoist/libblinkstick]
