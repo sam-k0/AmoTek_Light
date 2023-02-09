@@ -163,6 +163,7 @@ gmx GMBOOL freeDevice(GMINT slot)
  */
 gmx GMBOOL setDeviceLighting(GMINT slot, GMINT channel, GMINT index, GMINT red, GMINT green, GMINT blue)
 {
+	printf("Values: %d, %d, %d", (double)red, (double)green, (double)blue);
 	//Check if initialized
 	if (initialized == GMFALSE) { return GMFALSE; }
 
@@ -278,3 +279,17 @@ gmx GMINT resetLED(GMINT device, GMINT channel, GMINT index)
 	
 }
 
+gmx GMINT freeAllDevices()
+{
+	if (initialized == GMFALSE) { return GMFALSE;}
+
+	for( int i = 0 ; i < BLINKSTICK_ARRAY_SIZE; i ++)
+	{
+		if(deviceValid[i] == true)
+		{
+			blinkstick_destroy(deviceArray[i]);
+			deviceValid[i] = false;
+		}
+	}
+	return GMTRUE;
+}
